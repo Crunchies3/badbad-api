@@ -1,31 +1,44 @@
 from flask import Flask, request, jsonify, abort
-from google import genai
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+api_key = os.getenv("KEY")
+instruction_prefix = os.getenv("PARAM")
+
+if not api_key:
+    raise ValueError("Missing OpenAI API key (KEY) in environment variables.")
+if not instruction_prefix:
+    raise ValueError("Missing translation instruction (PARAM) in environment variables.")
+
 
 app = Flask(__name__)
+client = OpenAI(api_key=api_key)
 
-client = genai.Client(api_key="AIzaSyA2vAwOHZ4DP9CUwJonRRbVVuN6ZfohzEw")
 
 @app.route("/")
 def root():
-    return jsonify({"Hello": "World"})
+    return jsonify({"message": "Hello, World!"})
 
-@app.route("/translate/ata")
+
+@app.route("/translate/ata", methods=["GET"])
 def get_translation():
     message = request.args.get("message", "").strip()
     if not message:
-        abort(400, description="message cannot be empty")
-    
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents=(
-            f"translate the following ata-manobo sentence into english. provide only the translated sentence in plain text. "
-            "do not add explanations or any extra text. keep the punctuation exactly as in the input—do not add, remove, or change it. "
-            "english grammar does not need to be perfect. if there are any words you don’t know or are misspelled, keep them exactly as they appear "
-            "in the original sentence without translating or correcting them. do not capitalize any words in the translation. "
-            f"if the input is not a word, just output it back exactly as it is.: {message}"
+        abort(400, description="Query parameter 'message' cannot be empty.")
+
+    prompt = instruction_prefix + message
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[{"role": "user", "content": prompt}]
         )
-    )
-    return jsonify({"translation": response.text})
+        translated = response.choices[0].message.content.strip()
+        return jsonify({"translation": translated})
+    except Exception as e:
+        abort(500, description=str(e))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
