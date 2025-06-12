@@ -6,12 +6,9 @@ import os
 # Load environment variables
 load_dotenv()
 api_key = os.getenv("KEY")
-instruction_prefix = os.getenv("PARAM")
 
 if not api_key:
     raise ValueError("Missing OpenAI API key (KEY) in environment variables.")
-if not instruction_prefix:
-    raise ValueError("Missing translation instruction (PARAM) in environment variables.")
 
 # Set OpenAI API key
 openai.api_key = api_key
@@ -28,12 +25,24 @@ def get_translation():
     if not message:
         abort(400, description="Query parameter 'message' cannot be empty.")
 
-    prompt = instruction_prefix + message
-
     try:
         response = openai.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[{"role": "user", "content": prompt}]
+            model="gpt-4.1",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "you are a translation tool that translates ata manobo to english. "
+                        "respond only with the translated sentence. make all text lowercase. "
+                        "the number and type of punctuation marks in the output must exactly match the input—"
+                        "do not add, remove, or change any punctuation."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ]
         )
         translated = response.choices[0].message.content.strip()
         return jsonify({"translation": translated})
