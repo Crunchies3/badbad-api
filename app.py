@@ -1,8 +1,9 @@
+import openai
 from flask import Flask, request, jsonify, abort
-from openai import OpenAI
 from dotenv import load_dotenv
 import os
 
+# Load environment variables
 load_dotenv()
 api_key = os.getenv("KEY")
 instruction_prefix = os.getenv("PARAM")
@@ -12,15 +13,14 @@ if not api_key:
 if not instruction_prefix:
     raise ValueError("Missing translation instruction (PARAM) in environment variables.")
 
+# Set OpenAI API key
+openai.api_key = api_key
 
 app = Flask(__name__)
-client = OpenAI(api_key=api_key)
-
 
 @app.route("/")
 def root():
     return jsonify({"message": "Hello, World!"})
-
 
 @app.route("/translate/ata", methods=["GET"])
 def get_translation():
@@ -31,7 +31,7 @@ def get_translation():
     prompt = instruction_prefix + message
 
     try:
-        response = client.chat.completions.create(
+        response = openai.chat.completions.create(
             model="gpt-4.1-mini",
             messages=[{"role": "user", "content": prompt}]
         )
