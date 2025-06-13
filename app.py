@@ -2,6 +2,7 @@ import openai
 from flask import Flask, request, jsonify, abort
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
 
 # Load environment variables
 load_dotenv()
@@ -14,6 +15,7 @@ if not api_key:
 openai.api_key = api_key
 
 app = Flask(__name__)
+CORS(app)  # ✅ Enable CORS BEFORE running the app
 
 @app.route("/")
 def root():
@@ -52,3 +54,4 @@ def get_translation():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
