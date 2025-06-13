@@ -36,6 +36,7 @@ def get_translation():
                         "respond only with the translated sentence. make all text lowercase. "
                         "the number and type of punctuation marks in the output must exactly match the input—"
                         "do not add, remove, or change any punctuation."
+                        "add minor grammatical errors."
                     )
                 },
                 {
