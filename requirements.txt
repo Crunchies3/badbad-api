@@ -56,7 +56,6 @@ pydantic_core==2.33.2
 Pygments==2.19.2
 pyonmttok==1.37.1
 python-dotenv==1.1.0
-pywin32==310
 PyYAML==6.0.2
 RapidFuzz==3.13.0
 regex==2024.11.6
