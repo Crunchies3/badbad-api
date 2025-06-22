@@ -2,10 +2,10 @@ import openai
 from flask import Flask, request, jsonify, abort
 from dotenv import load_dotenv
 import os
+import subprocess
+import tempfile
 from flask_cors import CORS
 import sentencepiece as spm
-import onmt.utils.parse
-from onmt.translate.translator import build_translator
 
 # Load environment variables
 load_dotenv()
@@ -14,24 +14,15 @@ api_key = os.getenv("KEY")
 if not api_key:
     raise ValueError("Missing OpenAI API key (KEY) in environment variables.")
 
-# Set OpenAI API key
 openai.api_key = api_key
 
-# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
 sp_encode = spm.SentencePieceProcessor(model_file='spm_en.model')
-sp_decode = spm.SentencePieceProcessor(model_file='spm_ata.model') 
+sp_decode = spm.SentencePieceProcessor(model_file='spm_ata.model')
 
-translator_opts = onmt.utils.parse.ArgumentParser().parse_args_from_string([
-    '-model', 'eng-ata/run/latest.pt',
-    '-replace_unk',
-    '-beam_size', '5',
-    '-n_best', '1'
-])
-
-translator = build_translator(opt=translator_opts, report_score=False)
+MODEL_PATH = "latest.pt"
 
 @app.route("/")
 def root():
@@ -68,6 +59,7 @@ def get_translation():
     except Exception as e:
         abort(500, description=str(e))
 
+
 @app.route("/translate/eng", methods=["GET"])
 def translate_eng_to_ata():
     message = request.args.get("message", "").strip()
@@ -75,28 +67,50 @@ def translate_eng_to_ata():
         abort(400, description="Query parameter 'message' cannot be empty.")
 
     try:
-        # Encode the English input
+        # Encode using SentencePiece
         encoded = sp_encode.encode(message, out_type=str)
-        tokenized_input = [" ".join(encoded)]  # OpenNMT expects space-delimited string
+        tokenized_input = " ".join(encoded)
 
-        # Translate using OpenNMT-py (in-memory)
-        translations = translator.translate(
-            src=tokenized_input,
-            tgt=None,
-            src_dir=None,
-            batch_size=1,
-            attn_debug=False
-        )
+        # Write tokenized input to temporary file with UTF-8 encoding
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".txt", encoding="utf-8") as src_file:
+            src_file.write(tokenized_input + "\n")
+            src_file_path = src_file.name
 
-        # Get top translation output
-        translated_pieces = translations[0][0].split()
+        # Prepare output file path
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".txt", encoding="utf-8") as out_file:
+            out_file_path = out_file.name
 
-        # Decode using Ata SPM
-        decoded = sp_decode.decode(translated_pieces)
+        # Call onmt_translate via subprocess
+        command = [
+            "onmt_translate",
+            "-model", MODEL_PATH,
+            "-src", src_file_path,
+            "-output", out_file_path,
+            "-replace_unk",
+            "-beam_size", "5",
+            "-n_best", "1"
+        ]
 
-        return jsonify({"translation": decoded})
+        subprocess.run(command, check=True)
+
+        # Read translated output (UTF-8)
+        with open(out_file_path, "r", encoding="utf-8") as f:
+            translated_tokens = f.read().strip().split()
+
+        # Decode using SentencePiece
+        translation = sp_decode.decode(translated_tokens)
+
+        # Cleanup temp files
+        os.remove(src_file_path)
+        os.remove(out_file_path)
+
+        return jsonify({"translation": translation})
+
+    except subprocess.CalledProcessError as e:
+        abort(500, description=f"Translation process failed: {e}")
     except Exception as e:
         abort(500, description=str(e))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
