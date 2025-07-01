@@ -81,7 +81,7 @@ def translate_eng_to_ata():
 
         # Perform translation using CTranslate2
         logger.info("Calling translator.translate_batch...")
-        results = translator.translate_batch([encoded], beam_size=1)
+        results = translator.translate_batch([encoded], beam_size=1,max_batch_size=1)
         logger.info("Translation results: %s", results)
 
         # Get best translation
