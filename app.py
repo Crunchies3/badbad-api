@@ -1,12 +1,10 @@
 import openai
 from flask import Flask, request, jsonify, abort
 from dotenv import load_dotenv
-import os
-import subprocess
-import tempfile
 from flask_cors import CORS
 import sentencepiece as spm
 import ctranslate2
+import os
 
 # Load environment variables
 load_dotenv()
@@ -59,7 +57,6 @@ def get_translation():
         return jsonify({"translation": translated})
     except Exception as e:
         abort(500, description=str(e))
-
 
 @app.route("/translate/eng", methods=["GET"])
 def translate_eng_to_ata():
