@@ -65,21 +65,30 @@ def translate_eng_to_ata():
         abort(400, description="Query parameter 'message' cannot be empty.")
 
     try:
+        print(f"Received input: {message}")  # Log the incoming message
+
         # Encode message using SentencePiece
         encoded = sp_encode.encode(message, out_type=str)
+        print("Encoded tokens:", encoded)  # Log tokenized input
 
         # Perform translation using CTranslate2
-        results = translator.translate_batch([encoded], beam_size=5)
+        print("Calling translator.translate_batch...")
+        results = translator.translate_batch([encoded], beam_size=1)  # Use beam_size=1 to reduce memory
+        print("Translation results:", results)
 
         # Get best translation (n_best=1)
         translated_tokens = results[0].hypotheses[0]
+        print("Best hypothesis:", translated_tokens)
 
         # Decode using SentencePiece
         translation = sp_decode.decode(translated_tokens)
+        print("Final translation:", translation)
 
         return jsonify({"translation": translation})
 
     except Exception as e:
+        print("Error during translation:")
+        traceback.print_exc()  # Log full error stacktrace
         abort(500, description=str(e))
 
 if __name__ == "__main__":
