@@ -28,7 +28,9 @@ logger = logging.getLogger(__name__)
 # Load models
 sp_encode = spm.SentencePieceProcessor(model_file='spm_en.model')
 sp_decode = spm.SentencePieceProcessor(model_file='spm_ata.model')
-translator = ctranslate2.Translator("ctranslate_model", device="cpu")
+
+translator = ctranslate2.Translator("ctranslate_model", device="cpu", compute_type="int8")
+
 
 @app.route("/")
 def root():
