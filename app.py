@@ -1,10 +1,12 @@
 import openai
+import os
+import logging
+import traceback
 from flask import Flask, request, jsonify, abort
-from dotenv import load_dotenv
 from flask_cors import CORS
+from dotenv import load_dotenv
 import sentencepiece as spm
 import ctranslate2
-import os
 
 # Load environment variables
 load_dotenv()
@@ -15,12 +17,17 @@ if not api_key:
 
 openai.api_key = api_key
 
+# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Load models
 sp_encode = spm.SentencePieceProcessor(model_file='spm_en.model')
 sp_decode = spm.SentencePieceProcessor(model_file='spm_ata.model')
-
 translator = ctranslate2.Translator("ctranslate_model", device="cpu")
 
 @app.route("/")
@@ -56,6 +63,7 @@ def get_translation():
         translated = response.choices[0].message.content.strip()
         return jsonify({"translation": translated})
     except Exception as e:
+        logger.error("Error in /translate/ata", exc_info=True)
         abort(500, description=str(e))
 
 @app.route("/translate/eng", methods=["GET"])
@@ -65,30 +73,29 @@ def translate_eng_to_ata():
         abort(400, description="Query parameter 'message' cannot be empty.")
 
     try:
-        print(f"Received input: {message}")  # Log the incoming message
+        logger.info(f"Received input: {message}")
 
         # Encode message using SentencePiece
         encoded = sp_encode.encode(message, out_type=str)
-        print("Encoded tokens:", encoded)  # Log tokenized input
+        logger.info("Encoded tokens: %s", encoded)
 
         # Perform translation using CTranslate2
-        print("Calling translator.translate_batch...")
-        results = translator.translate_batch([encoded], beam_size=1)  # Use beam_size=1 to reduce memory
-        print("Translation results:", results)
+        logger.info("Calling translator.translate_batch...")
+        results = translator.translate_batch([encoded], beam_size=1)
+        logger.info("Translation results: %s", results)
 
-        # Get best translation (n_best=1)
+        # Get best translation
         translated_tokens = results[0].hypotheses[0]
-        print("Best hypothesis:", translated_tokens)
+        logger.info("Best hypothesis: %s", translated_tokens)
 
         # Decode using SentencePiece
         translation = sp_decode.decode(translated_tokens)
-        print("Final translation:", translation)
+        logger.info("Final translation: %s", translation)
 
         return jsonify({"translation": translation})
 
     except Exception as e:
-        print("Error during translation:")
-        traceback.print_exc()  # Log full error stacktrace
+        logger.error("Error during translation in /translate/eng", exc_info=True)
         abort(500, description=str(e))
 
 if __name__ == "__main__":
