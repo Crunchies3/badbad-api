@@ -5,3 +5,4 @@ openai
 sentencepiece
 ctranslate2
 numpy<2 
+gunicorn==23.0.0
