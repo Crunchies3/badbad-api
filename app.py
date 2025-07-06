@@ -1,36 +1,33 @@
-import openai
 import os
 import logging
-import traceback
+import json
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
-from dotenv import load_dotenv
 import sentencepiece as spm
 import ctranslate2
-
-# Load environment variables
-load_dotenv()
-api_key = os.getenv("KEY")
-
-if not api_key:
-    raise ValueError("Missing OpenAI API key (KEY) in environment variables.")
-
-openai.api_key = api_key
+from _service import service 
+from _sys import build_system_prompt    
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
-# Configure logging
+# Logging config
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Load models
 sp_encode = spm.SentencePieceProcessor(model_file='spm_en.model')
 sp_decode = spm.SentencePieceProcessor(model_file='spm_ata.model')
-
 translator = ctranslate2.Translator("ctranslate_model", device="cpu", compute_type="int8")
 
+# Load or initialize translation memory
+TM_FILE = 'translation_memory.json'
+if os.path.exists(TM_FILE):
+    with open(TM_FILE, 'r', encoding='utf-8') as f:
+        translation_memory = json.load(f)
+else:
+    translation_memory = {}
 
 @app.route("/")
 def root():
@@ -42,28 +39,20 @@ def get_translation():
     if not message:
         abort(400, description="Query parameter 'message' cannot be empty.")
 
+    # Check memory
+    if message in translation_memory:
+        return jsonify({"translation": translation_memory[message]})
+
     try:
-        response = openai.chat.completions.create(
-            model="gpt-4.1",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "you are a translation tool that translates ata manobo to english. "
-                        "respond only with the translated sentence. make all text lowercase. "
-                        "the number and type of punctuation marks in the output must exactly match the input—"
-                        "do not add, remove, or change any punctuation."
-                        "add minor grammatical errors."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ]
-        )
-        translated = response.choices[0].message.content.strip()
+        translated = service(message, translation_memory)
+
+        # Save to memory
+        translation_memory[message] = translated
+        with open(TM_FILE, 'w', encoding='utf-8') as f:
+            json.dump(translation_memory, f, ensure_ascii=False, indent=2)
+
         return jsonify({"translation": translated})
+
     except Exception as e:
         logger.error("Error in /translate/ata", exc_info=True)
         abort(500, description=str(e))
@@ -77,20 +66,15 @@ def translate_eng_to_ata():
     try:
         logger.info(f"Received input: {message}")
 
-        # Encode message using SentencePiece
+        # Tokenize
         encoded = sp_encode.encode(message, out_type=str)
         logger.info("Encoded tokens: %s", encoded)
 
-        # Perform translation using CTranslate2
-        logger.info("Calling translator.translate_batch...")
-        results = translator.translate_batch([encoded], beam_size=1,max_batch_size=1)
-        logger.info("Translation results: %s", results)
-
-        # Get best translation
+        # Translate
+        results = translator.translate_batch([encoded], beam_size=1, max_batch_size=1)
         translated_tokens = results[0].hypotheses[0]
-        logger.info("Best hypothesis: %s", translated_tokens)
 
-        # Decode using SentencePiece
+        # Detokenize
         translation = sp_decode.decode(translated_tokens)
         logger.info("Final translation: %s", translation)
 
@@ -101,4 +85,4 @@ def translate_eng_to_ata():
         abort(500, description=str(e))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
