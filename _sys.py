@@ -8,11 +8,6 @@ def build_system_prompt  (translation_memory):
         "- Preserve all punctuation exactly as in the input.\n"
         "- Do not use the English outputs as examples of possible input.\n"
         "- No extra explanation or metadata should be returned.\n\n"
-        "Stored examples:\n"
-        "Ata Manobo inputs:\n" +
-        "\n".join(translation_memory.keys()) +
-        "\n\nMatching English outputs:\n" +
-        "\n".join(translation_memory.values())
     )
 
 
