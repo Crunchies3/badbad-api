@@ -84,6 +84,10 @@ def translate_eng_to_ata():
     if not message:
         abort(400, description="Query parameter 'message' cannot be empty.")
 
+    # ✅ Check if already translated before
+    if message in translation_memory:
+        return jsonify({"translation": translation_memory[message]})
+
     try:
         logger.info(f"Received input: {message}")
 
@@ -99,11 +103,17 @@ def translate_eng_to_ata():
         translation = sp_decode.decode(translated_tokens)
         logger.info("Final translation: %s", translation)
 
+        # ✅ Save to memory
+        translation_memory[message] = translation
+        with open(TM_FILE, 'w', encoding='utf-8') as f:
+            json.dump(translation_memory, f, ensure_ascii=False, indent=2)
+
         return jsonify({"translation": translation})
 
     except Exception as e:
         logger.error("Error during translation in /translate/eng", exc_info=True)
         abort(500, description=str(e))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
