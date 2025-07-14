@@ -1,0 +1,186 @@
+[
+    {
+        "id": 1,
+        "user": "user1",
+        "ata_phrase": "marudjow no masulom",
+        "audio_url": "https://example.com/audio/marudjow_no_masulom.mp3",
+        "eng_phrase": "good morning",
+        "status": "pending"
+    },
+    {
+        "id": 2,
+        "user": "user1",
+        "ata_phrase": "marudjow no maudto",
+        "audio_url": "https://example.com/audio/marudjow_no_maudto.mp3",
+        "eng_phrase": "good noon",
+        "status": "pending"
+    },
+    {
+        "id": 3,
+        "user": "user1",
+        "ata_phrase": "marudjow na mapon",
+        "audio_url": "https://example.com/audio/marudjow_na_mapon.mp3",
+        "eng_phrase": "good afternoon",
+        "status": "pending"
+    },
+    {
+        "id": 4,
+        "user": "user1",
+        "ata_phrase": "marudjow no moysilom",
+        "audio_url": "https://example.com/audio/marudjow_no_moysilom.mp3",
+        "eng_phrase": "good evening",
+        "status": "pending"
+    },
+    {
+        "id": 5,
+        "user": "user1",
+        "ata_phrase": "salamat yagbay",
+        "audio_url": "https://example.com/audio/salamat_yagbay.mp3",
+        "eng_phrase": "thank you so much",
+        "status": "pending"
+    },
+    {
+        "id": 6,
+        "user": "user1",
+        "ata_phrase": "marojow no aldaw",
+        "audio_url": "https://example.com/audio/marojow_no_aldaw.mp3",
+        "eng_phrase": "good day",
+        "status": "pending"
+    },
+    {
+        "id": 7,
+        "user": "user1",
+        "ata_phrase": "kangaran kow",
+        "audio_url": "https://example.com/audio/kangaran_kow.mp3",
+        "eng_phrase": "my name is",
+        "status": "pending"
+    },
+    {
+        "id": 8,
+        "user": "user1",
+        "ata_phrase": "kay an ugpo",
+        "audio_url": "https://example.com/audio/kay_an_ugpo.mp3",
+        "eng_phrase": "i am from",
+        "status": "pending"
+    },
+    {
+        "id": 9,
+        "user": "user1",
+        "ata_phrase": "hundo ikan ug pow?",
+        "audio_url": "https://example.com/audio/hundo_ikan_ug_pow.mp3",
+        "eng_phrase": "where are you from?",
+        "status": "pending"
+    },
+    {
+        "id": 10,
+        "user": "user1",
+        "ata_phrase": "gusto ko su in!",
+        "audio_url": "https://example.com/audio/gusto_ko_su_in.mp3",
+        "eng_phrase": "i like this!",
+        "status": "pending"
+    },
+    {
+        "id": 11,
+        "user": "user1",
+        "ata_phrase": "kana a",
+        "audio_url": "https://example.com/audio/kana_a.mp3",
+        "eng_phrase": "i don't want",
+        "status": "pending"
+    },
+    {
+        "id": 12,
+        "user": "user1",
+        "ata_phrase": "kuno",
+        "audio_url": "https://example.com/audio/kuno.mp3",
+        "eng_phrase": "no",
+        "status": "pending"
+    },
+    {
+        "id": 13,
+        "user": "user1",
+        "ata_phrase": "daka",
+        "audio_url": "https://example.com/audio/daka.mp3",
+        "eng_phrase": "stop",
+        "status": "pending"
+    },
+    {
+        "id": 14,
+        "user": "user1",
+        "ata_phrase": "ho o",
+        "audio_url": "https://example.com/audio/ho_o.mp3",
+        "eng_phrase": "yes",
+        "status": "pending"
+    },
+    {
+        "id": 15,
+        "user": "user1",
+        "ata_phrase": "amoy ko",
+        "audio_url": "https://example.com/audio/amoy_ko.mp3",
+        "eng_phrase": "my father",
+        "status": "pending"
+    },
+    {
+        "id": 16,
+        "user": "user1",
+        "ata_phrase": "wadag kahadok",
+        "audio_url": "https://example.com/audio/wadag_kahadok.mp3",
+        "eng_phrase": "i fear no one",
+        "status": "pending"
+    },
+    {
+        "id": 17,
+        "user": "user1",
+        "ata_phrase": "ug kow-on ki",
+        "audio_url": "https://example.com/audio/ug_kow-on_ki.mp3",
+        "eng_phrase": "let's eat",
+        "status": "pending"
+    },
+    {
+        "id": 18,
+        "user": "user1",
+        "ata_phrase": "kuno kog paminog",
+        "audio_url": "https://example.com/audio/kuno_kog_paminog.mp3",
+        "eng_phrase": "you don't listen",
+        "status": "pending"
+    },
+    {
+        "id": 19,
+        "user": "user1",
+        "ata_phrase": "pamaygos ki now",
+        "audio_url": "https://example.com/audio/pamaygos_ki_now.mp3",
+        "eng_phrase": "let's take a bath",
+        "status": "pending"
+    },
+    {
+        "id": 20,
+        "user": "user1",
+        "ata_phrase": "hundo ikag hundiyo",
+        "audio_url": "https://example.com/audio/hundo_ikag_hundiyo.mp3",
+        "eng_phrase": "where are you going?",
+        "status": "pending"
+    },
+    {
+        "id": 21,
+        "user": "user1",
+        "ata_phrase": "uli kinaw-an",
+        "audio_url": "https://example.com/audio/uli_kinaw-an.mp3",
+        "eng_phrase": "let's go home",
+        "status": "pending"
+    },
+    {
+        "id": 22,
+        "user": "user1",
+        "ata_phrase": "boy",
+        "eng_phrase": "girl",
+        "audio_url": "https://example.com/audio/boy_girl.mp3",
+        "status": "pending"
+    },
+    {
+        "id": 23,
+        "user": "user1",
+        "ata_phrase": "lukas",
+        "audio_url": "https://example.com/audio/lukas.mp3",
+        "eng_phrase": "boy",
+        "status": "pending"
+    }
+]
