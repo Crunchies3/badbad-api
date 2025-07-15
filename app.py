@@ -69,7 +69,7 @@ def upload_audio():
             cursor = conn.cursor()
             cursor.execute(
                 "INSERT INTO tbl_phrases (user, ata_phrase, eng_phrase, audio_url, status) VALUES (%s, %s, %s, %s, %s)",
-                (user, ata_phrase, eng_phrase, audio_url, "active")
+                (user, ata_phrase, eng_phrase, audio_url, "pending")
             )
             conn.commit()
             cursor.close()

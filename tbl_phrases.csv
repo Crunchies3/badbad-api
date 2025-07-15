@@ -1,24 +1,35 @@
 id,user,ata_phrase,audio_url,eng_phrase,status
-1,user1,marudjow no masulom,https://example.com/audio/marudjow_no_masulom.mp3,good morning,pending
-2,user1,marudjow no maudto,https://example.com/audio/marudjow_no_maudto.mp3,good noon,pending
-3,user1,marudjow na mapon,https://example.com/audio/marudjow_na_mapon.mp3,good afternoon,pending
-4,user1,marudjow no moysilom,https://example.com/audio/marudjow_no_moysilom.mp3,good evening,pending
-5,user1,salamat yagbay,https://example.com/audio/salamat_yagbay.mp3,thank you so much,pending
+
 6,user1,marojow no aldaw,https://example.com/audio/marojow_no_aldaw.mp3,good day,pending
 7,user1,kangaran kow,https://example.com/audio/kangaran_kow.mp3,my name is,pending
+
 8,user1,kay an ugpo,https://example.com/audio/kay_an_ugpo.mp3,i am from,pending
+
 9,user1,hundo ikan ug pow?,https://example.com/audio/hundo_ikan_ug_pow.mp3,where are you from?,pending
 10,user1,gusto ko su in!,https://example.com/audio/gusto_ko_su_in.mp3,i like this!,pending
+
 11,user1,kana a,https://example.com/audio/kana_a.mp3,i don't want,pending
+
 12,user1,kuno,https://example.com/audio/kuno.mp3,no,pending
 13,user1,daka,https://example.com/audio/daka.mp3,stop,pending
+
 14,user1,ho o,https://example.com/audio/ho_o.mp3,yes,pending
+
 15,user1,amoy ko,https://example.com/audio/amoy_ko.mp3,my father,pending
+
 16,user1,wadag kahadok,https://example.com/audio/wadag_kahadok.mp3,i fear no one,pending
+
 17,user1,ug kow-on ki,https://example.com/audio/ug_kow-on_ki.mp3,let's eat,pending
+
 18,user1,kuno kog paminog,https://example.com/audio/kuno_kog_paminog.mp3,you don't listen,pending
+
 19,user1,pamaygos ki now,https://example.com/audio/pamaygos_ki_now.mp3,let's take a bath,pending
+
 20,user1,hundo ikag hundiyo,https://example.com/audio/hundo_ikag_hundiyo.mp3,where are you going?,pending
+
 21,user1,uli kinaw-an,https://example.com/audio/uli_kinaw-an.mp3,let's go home,pending
-22,user1,boy,https://example.com/audio/boy_girl.mp3,girl,pending
+
 23,user1,lukas,https://example.com/audio/lukas.mp3,boy,pending
+
+
+22,user1,boy,https://example.com/audio/boy_girl.mp3,girl,pending
