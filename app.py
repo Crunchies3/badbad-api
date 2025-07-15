@@ -9,10 +9,10 @@ from contextlib import contextmanager
 
 app = Flask(__name__)
 CORS(app, 
-     origins="*",
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-     allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
-     supports_credentials=True)
+    origins="*",
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+    supports_credentials=True)
 
 logging.basicConfig(level=logging.INFO)
 
