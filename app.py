@@ -1,18 +1,32 @@
 import os
 import json
 from flask import Flask, request, jsonify, abort, send_file
-from flask_cors import CORS
 from _service import service
 import logging
 import mysql.connector
 from contextlib import contextmanager
 
 app = Flask(__name__)
-CORS(app, 
-    origins="*",
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
-    supports_credentials=True)
+
+# Simple CORS setup - remove Flask-CORS and do it manually
+@app.after_request
+def after_request(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With, ngrok-skip-browser-warning, Cache-Control'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Max-Age'] = '86400'
+    return response
+
+# Handle preflight OPTIONS requests
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = jsonify({})
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With, ngrok-skip-browser-warning, Cache-Control'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Max-Age'] = '86400'
+        return response
 
 logging.basicConfig(level=logging.INFO)
 
