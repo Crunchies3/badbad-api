@@ -75,7 +75,6 @@ def upload_audio():
             cursor.close()
     except Exception as e:
         abort(500, description=f"MySQL error: {e}")
-
     return jsonify({
         "message": "Audio uploaded successfully.",
         "audio_url": audio_url,
