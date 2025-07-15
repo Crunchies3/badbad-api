@@ -262,7 +262,9 @@ def update_phrase():
     # Prepare for audio file update
     new_audio_url = None
     old_audio_url = None
+    audio_updated = False
     if audio_file:
+        audio_updated = True
         # Get old audio_url from DB
         try:
             with mysql_connection() as conn:
@@ -291,16 +293,24 @@ def update_phrase():
     # Build dynamic update query
     fields = []
     values = []
+    phrase_edited = False
     if ata_phrase is not None:
         fields.append("ata_phrase = %s")
         values.append(ata_phrase)
+        phrase_edited = True
     if eng_phrase is not None:
         fields.append("eng_phrase = %s")
         values.append(eng_phrase)
+        phrase_edited = True
     if new_audio_url is not None:
         fields.append("audio_url = %s")
         values.append(new_audio_url)
-    if status is not None:
+        phrase_edited = True
+    # If any phrase or audio is edited and status is not explicitly set, set status to pending
+    if (phrase_edited or audio_updated) and status is None:
+        fields.append("status = %s")
+        values.append("pending")
+    elif status is not None:
         fields.append("status = %s")
         values.append(status)
     if user is not None:
@@ -323,6 +333,38 @@ def update_phrase():
             if os.path.exists(old_audio_path):
                 os.remove(old_audio_path)
         return jsonify({"message": "Phrase updated successfully."})
+    except Exception as e:
+        abort(500, description=f"MySQL error: {e}")
+
+@app.route("/approve-phrase", methods=["POST"])
+def approve_phrase():
+    data = request.json or {}
+    phrase_id = data.get("id")
+    if not phrase_id:
+        abort(400, description="Field 'id' is required.")
+    try:
+        with mysql_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE tbl_phrases SET status = %s WHERE id = %s", ("active", phrase_id))
+            conn.commit()
+            cursor.close()
+        return jsonify({"message": "Phrase approved successfully."})
+    except Exception as e:
+        abort(500, description=f"MySQL error: {e}")
+
+@app.route("/reject-phrase", methods=["POST"])
+def reject_phrase():
+    data = request.json or {}
+    phrase_id = data.get("id")
+    if not phrase_id:
+        abort(400, description="Field 'id' is required.")
+    try:
+        with mysql_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE tbl_phrases SET status = %s WHERE id = %s", ("rejected", phrase_id))
+            conn.commit()
+            cursor.close()
+        return jsonify({"message": "Phrase rejected successfully."})
     except Exception as e:
         abort(500, description=f"MySQL error: {e}")
 
