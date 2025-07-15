@@ -8,7 +8,7 @@ import mysql.connector
 from contextlib import contextmanager
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="*")
 
 logging.basicConfig(level=logging.INFO)
 
